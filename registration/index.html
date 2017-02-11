@@ -1,0 +1,23 @@
+<html>
+<head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <title>Регистрация</title>
+</head>
+<body>
+        <h1>Регистрация</h1>
+        <form id="registration" action="/registration.pl">
+        <p><input placeholder="Фамилия Имя Отчество" name="fio"></p>
+	<p><input placeholder="Логин" name="login"></p>
+	<p><input placeholder="Пароль" name="passwd"></p>
+	<p><input placeholder="Пароль еще раз" name="checkpasswd"></p>
+	<p><select name="department"></p>
+	<option selected value="s1">Руководство</option>
+	<option value="s2">Операционный отдел</option>
+	<option value="s3">Отдел информационного обеспечения</option>
+	<option value="s4">Отдел хозяйственного обеспечения</option>
+	</select>
+        </form>
+        <button type="submit" form="registration" >Зарегистрироваться</button>
+</body>
+</html>
+
