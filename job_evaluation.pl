@@ -2,39 +2,54 @@
 
 use CGI qw/:standard/;
 use utf8;
-#use open ':locale:';
+use DBI;
 binmode(STDOUT,':utf8');
 
-my $signin = 0;
+#print		
+#           header(-charset=>'utf8'),           
+#	   start_html('Simple Script'),
+#           h1('Оценка работы отделов'),
+#	   start_form,
+#	   "Представьтесь: ",p,
+#	   "Логин:",textfield('login'),p,
+#	   "Пароль:",textfield('password'),p,
+#	   submit('Войти'),"\n";
+#          hr,"\n";
 
-print		
-           header(-charset=>'utf8'),           
-	   start_html('Simple Script'),
-           h1('Оценка работы отделов'),
-	   start_form,
-	   "Представьтесь: ",p,
-	   "Логин:",textfield('login'),p,
-	   "Пароль:",textfield('password'),p,
-	   submit('Войти'),"\n";
-           hr,"\n";
+my $host = "localhost";
+my $port = "3306";
+my $user = "root";
+my $sql_passwd = '2NB5n$0&XTEU';
+my $db = "evaluation";
 
 if (param) {
-           print 
-           "Your name is ",em(param('login')),p,
-           "Your favorite color is ",em(param('color')),".\n";
-           open(my $fh, '>>', '/home/pi/fcgi/testing');
-           my $name = param('login');
+	my $login = param('login');
+	my $passwd = param('passwd');
 
-           my $last_name = param('last_name');
-           my $first_name = param('first_name');
-           my $patronymic = param('patronymic');
-           my $post = param('post');
-           my $id_card = param('id_card');
-           my $reader_id = param('reader_id');
-           my $datetime = localtime();
+	if (checkUser($login, $passwd) == 1) {
+		print redirect('http://192.168.8.5/voting/');
+	} elsif (checkUser($login, $passwd) == -1) {
+		print redirect('http://192.168.8.5/voting/invalid_password.html');
+	} else {
+		print redirect('http://192.168.8.5/voting/invalid_login.html');
+	}
+}     
 
-           print $fh "$datetime from $reader_id : $name | $first_name | $patronymic | $post | $id_card \n";
-           close $fh;
-        }
-        print end_html;
-
+sub checkUser {
+	my $dbh = DBI->connect("DBI:mysql:$db:$host:$port",$user,$sql_passwd);          my $sth = $dbh->prepare("select * from users where (?)");
+        my ($login, $passwd) = @_;
+	$sth->execute($passwd);
+	while (my $ref = $sth->fetchrow_arrayref) {
+		if ($$ref[0] =~ /$login/) {
+			if ($$ref[1] =~ /$passwd/) {
+				return 1; 
+			} else {
+				return -1; 
+			}
+		} else {
+			return 0; 
+		}
+	}
+	my $rc = $sth->finish;
+        $rc = $dbh->disconnect;	
+}
