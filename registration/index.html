@@ -8,13 +8,13 @@
         <form id="registration" action="/registration.pl">
         <p><input placeholder="Фамилия Имя Отчество" name="fio"></p>
 	<p><input placeholder="Логин" name="login"></p>
-	<p><input placeholder="Пароль" name="passwd"></p>
-	<p><input placeholder="Пароль еще раз" name="checkpasswd"></p>
+	<p><input type="password" placeholder="Пароль" name="passwd"></p>
+	<p><input type="password" placeholder="Пароль еще раз" name="checkpasswd"></p>
 	<p><select name="department"></p>
-	<option selected value="s1">Руководство</option>
-	<option value="s2">Операционный отдел</option>
-	<option value="s3">Отдел информационного обеспечения</option>
-	<option value="s4">Отдел хозяйственного обеспечения</option>
+	<option selected value="1">Руководство</option>
+	<option value="2">Операционный отдел</option>
+	<option value="3">Отдел информационного обеспечения</option>
+	<option value="4">Отдел хозяйственного обеспечения</option>
 	</select>
         </form>
         <button type="submit" form="registration" >Зарегистрироваться</button>
