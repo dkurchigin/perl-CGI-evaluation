@@ -26,30 +26,39 @@ if (param) {
 	my $login = param('login');
 	my $passwd = param('passwd');
 
-	if (checkUser($login, $passwd) == 1) {
-		print redirect('http://192.168.8.5/voting/');
-	} elsif (checkUser($login, $passwd) == -1) {
-		print redirect('http://192.168.8.5/voting/invalid_password.html');
-	} else {
-		print redirect('http://192.168.8.5/voting/invalid_login.html');
-	}
+	checkUser($login, $passwd);
 }     
 
 sub checkUser {
-	my $dbh = DBI->connect("DBI:mysql:$db:$host:$port",$user,$sql_passwd);          my $sth = $dbh->prepare("select * from users where (?)");
-        my ($login, $passwd) = @_;
-	$sth->execute($passwd);
+	my $dbh = DBI->connect("DBI:mysql:$db:$host:$port",$user,$sql_passwd);
+	my ($login, $passwd) = @_;
+	my $sth = $dbh->prepare("select * from users where login = (?)");
+	$sth->execute($login);
+
+	open(fh, ">> /home/pi/fcgi/testing");
+	print fh "Q $login $passwd\n";
+	my $access = 0;
+	
 	while (my $ref = $sth->fetchrow_arrayref) {
+		print fh "DB $$ref[0] $$ref[1]\n";
 		if ($$ref[0] =~ /$login/) {
-			if ($$ref[1] =~ /$passwd/) {
-				return 1; 
+			if ($$ref[1] =~ /^$passwd$/) {
+				$access = 1; 
 			} else {
-				return -1; 
+				$access = -1; 
 			}
 		} else {
-			return 0; 
+			$access = 0; 
 		}
 	}
 	my $rc = $sth->finish;
         $rc = $dbh->disconnect;	
+	close fh;
+	if ($access == 1) {
+		print redirect('http://imsonerd.no-ip.biz/voting/');	
+	} elsif ($access == -1) {
+		print redirect('http://imsonerd.no-ip.biz/voting/invalid_password.html');
+	} else {
+		print redirect('http://imsonerd.no-ip.biz/voting/invalid_login.html');
+	}
 }
