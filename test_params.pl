@@ -7,6 +7,17 @@ print
            start_html('Simple Script'),
            h1('Simple Script'),
 	hr,"\n";
+	       print table({-border=>undef},
+               caption('When Should You Eat Your Vegetables?'),
+               Tr({-align=>'CENTER',-valign=>'TOP'},
+               [
+                  th(['Vegetable', 'Breakfast','Lunch','Dinner']),
+                  td(['Tomatoes' , 'no', 'yes', 'yes']),
+                  td(['Broccoli' , 'no', 'no',  'yes']),
+                  td(['Onions'   , 'yes','yes', 'yes'])
+               ]
+               )
+            );
 
 if (param) {
            print

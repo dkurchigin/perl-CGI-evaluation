@@ -43,7 +43,11 @@ sub checkUser {
 		print fh "DB $$ref[0] $$ref[1]\n";
 		if ($$ref[0] =~ /$login/) {
 			if ($$ref[1] =~ /^$passwd$/) {
-				$access = 1; 
+				if ($$ref[2] =~ /^Y$/) {
+					$access = 2;
+				} else {
+					$access = 1;
+				} 
 			} else {
 				$access = -1; 
 			}
@@ -58,6 +62,8 @@ sub checkUser {
 		print redirect('http://imsonerd.no-ip.biz/voting/');	
 	} elsif ($access == -1) {
 		print redirect('http://imsonerd.no-ip.biz/voting/invalid_password.html');
+	} elsif ($access == 2) {
+		print redirect('http://imsonerd.no-ip.biz/results.pl'); 
 	} else {
 		print redirect('http://imsonerd.no-ip.biz/voting/invalid_login.html');
 	}
